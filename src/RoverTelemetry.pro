@@ -14,11 +14,31 @@ SOURCES += main.cpp \
     sender.cpp \
     teledata.cpp \
     registry.cpp \
-    imucomm.cpp
+    imucomm.cpp \
+    telemetry.cpp
 
 HEADERS += \
     listener.h \
     sender.h \
     teledata.h \
     registry.h \
-    imucomm.h
+    imucomm.h \
+    telemetry.h
+
+unix:!mac: {
+INCLUDEPATH += /usr/local/include
+INCLUDEPATH += /usr/local/include/IMUDrivers
+LIBS += -lRTIMULib
+DEFINES += USE_RTIMULib
+
+target.path = /usr/local/bin
+INSTALLS += target
+}
+
+win32: {
+DEFINES += WIN32=1
+DEFINES += _USE_MATH_DEFINES
+include(../3rdparty/RTIMULib/RTIMULib/RTIMULib.pri)
+}
+
+include(../common.pri)

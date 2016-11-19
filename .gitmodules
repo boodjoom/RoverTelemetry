@@ -1,3 +1,6 @@
 [submodule "3rdparty/RTIMULib"]
 	path = 3rdparty/RTIMULib
 	url = https://github.com/boodjoom/RTIMULib.git
+[submodule "3rdparty/qtposition_gpsd"]
+	path = 3rdparty/qtposition_gpsd
+	url = https://github.com/boodjoom/qtposition_gpsd.git
