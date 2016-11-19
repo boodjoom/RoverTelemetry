@@ -1,0 +1,3 @@
+[submodule "3rdparty/RTIMULib"]
+	path = 3rdparty/RTIMULib
+	url = https://github.com/boodjoom/RTIMULib.git

@@ -13,10 +13,12 @@ SOURCES += main.cpp \
     listener.cpp \
     sender.cpp \
     teledata.cpp \
-    registry.cpp
+    registry.cpp \
+    imucomm.cpp
 
 HEADERS += \
     listener.h \
     sender.h \
     teledata.h \
-    registry.h
+    registry.h \
+    imucomm.h
