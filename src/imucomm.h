@@ -2,14 +2,21 @@
 #define IMUCOMM_H
 
 #include <QObject>
+#include <QDir>
+#include <QFile>
 #include <teledata.h>
+#include <QDebug>
 
 class ImuComm : public QObject
 {
     Q_OBJECT
 public:
     ImuComm(TeleData* teleData, QObject *parent = 0);
-
+    void setImuSettingsDir(const QString& dir)
+    {
+        qDebug()<<"Using Imu Settings in "<<dir;
+        _settingsDir = dir;
+    }
 signals:
     void publish();
     void finished();
@@ -24,9 +31,10 @@ public slots:
         _mustExit=true;
     }
 protected:
-    void run();
+    Q_SLOT void run();
     TeleData* _teleData;
     bool _mustExit;
+    QString _settingsDir;
 };
 
 #endif // IMUCOMM_H

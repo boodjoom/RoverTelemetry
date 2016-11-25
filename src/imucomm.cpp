@@ -3,7 +3,9 @@
 #ifndef WIN32
 #   define WIN32 1
 #endif
+#ifdef USE_RTIMULib
 #include "RTIMULib.h"
+#endif
 #include <QDebug>
 #include <QScopedPointer>
 #include <QThread>
@@ -11,12 +13,14 @@
 ImuComm::ImuComm(TeleData *teleData, QObject *parent) : QObject(parent)
   , _teleData(teleData)
   , _mustExit(false)
+  , _settingsDir("/etc")
 {
     Q_ASSERT(_teleData);
 }
 
 void ImuComm::run()
 {
+#ifdef USE_RTIMULib
     int sampleCount = 0;
     int sampleRate = 0;
     uint64_t rateTimer;
@@ -27,7 +31,7 @@ void ImuComm::run()
     RTFLOAT heading;
     float heading_avg = 0.0f;
     RTIMU_DATA imuData;
-    QScopedPointer<RTIMUSettings> settings(new RTIMUSettings("RTIMULib"));
+    QScopedPointer<RTIMUSettings> settings(new RTIMUSettings(_settingsDir.toLocal8Bit().constData(),"RTIMULib"));
     QScopedPointer<RTIMU> imu(RTIMU::createIMU(settings.data()));
     if ((imu.isNull()) || (imu->IMUType() == RTIMU_TYPE_NULL)) {
         qCritical("ImuComm: No IMU found");
@@ -54,12 +58,12 @@ void ImuComm::run()
 
     //  set up for rate timer
     rateTimer = displayTimer = RTMath::currentUSecsSinceEpoch();
-
+#endif
 
     while(!_mustExit)
     {
         //  poll at the rate recommended by the IMU
-
+#ifdef USE_RTIMULib
         QThread::msleep(imu->IMUGetPollInterval());
         while (imu->IMURead())
         {
@@ -104,6 +108,7 @@ void ImuComm::run()
             }
 
         }
+#endif
 
     }
     emit finished();

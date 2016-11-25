@@ -1,0 +1,7 @@
+obj/
+bin/
+*.user
+*.pro.user.*
+moc/
+3rdparty/QtWebApp/
+build-*

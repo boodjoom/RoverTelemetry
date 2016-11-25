@@ -1,4 +1,4 @@
-QT += core network
+QT += core network positioning
 QT -= gui
 
 CONFIG += c++11
@@ -15,7 +15,10 @@ SOURCES += main.cpp \
     teledata.cpp \
     registry.cpp \
     imucomm.cpp \
-    telemetry.cpp
+    telemetry.cpp \
+    datagrambuilder.cpp \
+    gpscomm.cpp \
+    restcomm.cpp
 
 HEADERS += \
     listener.h \
@@ -23,7 +26,12 @@ HEADERS += \
     teledata.h \
     registry.h \
     imucomm.h \
-    telemetry.h
+    telemetry.h \
+    datagrambuilder.h \
+    gpscomm.h \
+    restcomm.h
+
+INCLUDEPATH += ../3rdparty/QtWebApp
 
 unix:!mac: {
 INCLUDEPATH += /usr/local/include
@@ -38,7 +46,13 @@ INSTALLS += target
 win32: {
 DEFINES += WIN32=1
 DEFINES += _USE_MATH_DEFINES
-include(../3rdparty/RTIMULib/RTIMULib/RTIMULib.pri)
+#include(../3rdparty/RTIMULib/RTIMULib/RTIMULib.pri)
+}
+
+# Directory where the debug version of the shared library (*.dll or *.so) is stored, and base name of the file.
+CONFIG(debug, debug|release) {
+    win32:      LIBS += -L$$PWD/../3rdparty/lib/win32-msvc2013/debug/          -lQtWebAppd1
+    unix:!mac:  LIBS += -L$$PWD/3rdparty/lib/rpi-g++/debug/              -lQtWebAppd
 }
 
 include(../common.pri)
