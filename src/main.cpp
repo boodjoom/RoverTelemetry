@@ -63,17 +63,18 @@ int main(int argc, char *argv[])
     // Find the configuration file
     QString configFileName=searchConfigFile(QCoreApplication::applicationName());
 
-    QSettings settings(configFileName,QSettings::IniFormat,&app);
-
     // Configure logging into a file
-    settings.beginGroup("logging");
+    QSettings* loggerSettings = new QSettings(configFileName,QSettings::IniFormat,&app);
+    loggerSettings->beginGroup("logger");
     FileLogger* logger = nullptr;
-    if(settings.value("ToFile",false).toBool())
+    if(loggerSettings->value("ToFile",false).toBool())
     {
-        logger=new FileLogger(&settings,10000,&app);
+        logger=new FileLogger(loggerSettings,10000,&app);
         logger->installMsgHandler();
     }
-    settings.endGroup();
+
+
+    QSettings settings(configFileName,QSettings::IniFormat,&app);
 
     qDebug()<<"Init telemetry data";
     TeleData* teleData = new TeleData();
@@ -95,7 +96,9 @@ int main(int argc, char *argv[])
     imuThread->start();
 
     qDebug()<<"Init gps source";
-    GpsComm* gpsComm = new GpsComm(teleData,&app);
+    settings.beginGroup("gps");
+    GpsComm* gpsComm = new GpsComm(settings,teleData,&app);
+    settings.endGroup();
     gpsComm->start();
 
     qDebug()<<"RoverRest source";

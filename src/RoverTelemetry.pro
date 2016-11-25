@@ -31,7 +31,9 @@ HEADERS += \
     gpscomm.h \
     restcomm.h
 
-win32 {
+OTHER_FILES += ../etc/*  ../logs/* ../etc/docroot/*
+
+win32: {
    DEFINES += QTWEBAPPLIB_IMPORT
 }
 #QtWebApp
@@ -60,10 +62,11 @@ DEFINES += _USE_MATH_DEFINES
 #include(../3rdparty/RTIMULib/RTIMULib/RTIMULib.pri)
 }
 
+include(../common.pri)
+
 # Directory where the debug version of the shared library (*.dll or *.so) is stored, and base name of the file.
 CONFIG(debug, debug|release) {
-    win32:      LIBS += -L$$PWD/../3rdparty/lib/win32-msvc2013/debug/          -lQtWebAppd1
+    win32:      LIBS += -L$$PWD/../3rdparty/lib/$$Platform-$$Compiler/debug/          -lQtWebAppd1
     unix:!mac:  LIBS += -L$$PWD/../3rdparty/lib/rpi-g++/debug/              -lQtWebAppd
 }
 
-include(../common.pri)

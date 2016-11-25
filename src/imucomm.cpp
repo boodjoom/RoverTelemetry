@@ -95,6 +95,7 @@ void ImuComm::run()
                 _teleData->imuData.temperature = imuData.IMUtemperature;
                 _teleData->imuData.motionData = motionData;
                 _teleData->imuData.motionData.motion = ismoving;
+                _teleData->imuDataValid = true;
                 emit publish();
                 displayTimer = now;
             }

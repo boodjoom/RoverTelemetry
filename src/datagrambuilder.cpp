@@ -11,22 +11,35 @@
 
 DatagramBuilder::DatagramBuilder(QSettings &settings)
 {
-
+    Q_UNUSED(settings)
 }
 
 QByteArray DatagramBuilder::fromTeleData(TeleData *teleData)
 {
-    QJsonObject accel = toRawObject(teleData->imuData.accel);
-    QJsonObject gyro = toRawObject(teleData->imuData.gyro);
-    QJsonObject vehicle;
-    vehicle["speed"]=QString::number(teleData->roverData.speed);
-    vehicle["yaw"]=QString::number(teleData->roverData.yaw);
-
     QJsonObject telemetry;
-    telemetry["accel"]=accel;
-    telemetry["gyro"]=gyro;
+
+    if(teleData->imuDataValid)
+    {
+        telemetry["accel"]=toRawObject(teleData->imuData.accel);
+        telemetry["gyro"]=toRawObject(teleData->imuData.gyro);
+    }
+
     if(teleData->roverDataValid)
+    {
+        QJsonObject vehicle;
+        vehicle["speed"]=QString::number(teleData->roverData.speed);
+        vehicle["yaw"]=QString::number(teleData->roverData.yaw);
         telemetry["vehicle"]=vehicle;
+    }
+
+    if(teleData->geoDataValid)
+    {
+        QJsonObject gps;
+        gps["lat"] = QString::number(teleData->geoData.latitude());
+        gps["lon"] = QString::number(teleData->geoData.longitude());
+        gps["alt"] = QString::number(teleData->geoData.altitude());
+        telemetry["gps"] = gps;
+    }
     telemetry["timestamp"]=QString::number(QDateTime::currentMSecsSinceEpoch());
     QJsonDocument doc;
     doc.setObject(telemetry);
