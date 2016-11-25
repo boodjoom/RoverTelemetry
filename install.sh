@@ -4,7 +4,7 @@ qmake qtposition_gpsd.pro
 make
 sudo make install
 cd ../RTIMULib
-qmake RTIMULib
+qmake RTIMULib.pro
 make
 sudo make install
 cd ../..
