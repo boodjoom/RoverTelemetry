@@ -21,7 +21,13 @@ QByteArray DatagramBuilder::fromTeleData(TeleData *teleData)
     if(teleData->imuDataValid)
     {
         telemetry["accel"]=toRawObject(teleData->imuData.accel);
-        telemetry["gyro"]=toRawObject(teleData->imuData.gyro);
+        telemetry["gyro"]=toAngleObject(teleData->imuData.gyro);
+        telemetry["temp"]=QString::number(teleData->imuData.temperature);
+        telemetry["mag"]=toAngleObject(teleData->imuData.compas);
+        telemetry["pos"]=toAngleObject(teleData->imuData.fusionPose);
+        telemetry["heading"]=QString::number(teleData->imuData.heading);
+        telemetry["velocity"]=toRawObject(teleData->imuData.motionData.worldVelocity);
+        telemetry["is_moving"]=teleData->imuData.motionData.motion;
     }
 
     if(teleData->roverDataValid)
@@ -29,6 +35,7 @@ QByteArray DatagramBuilder::fromTeleData(TeleData *teleData)
         QJsonObject vehicle;
         vehicle["speed"]=QString::number(teleData->roverData.speed);
         vehicle["yaw"]=QString::number(teleData->roverData.yaw);
+        vehicle["travel"]=QString::number(teleData->roverData.travel);
         telemetry["vehicle"]=vehicle;
     }
 

@@ -9,7 +9,15 @@
 #else
 #define RTFLOAT float
 struct RTVector3{float data[3];float x(){return data[0];}float y(){return data[1];}float z(){return data[2];}};
-#define MOTION_DATA int
+typedef struct
+{
+    RTVector3 worldAcceleration;
+    RTVector3 worldVelocity;
+    RTVector3 worldPosition;
+    RTVector3 worldVelocityDrift;
+    RTVector3 residuals;
+    bool motion;
+} MOTION_DATA;
 #define RTMATH_RAD_TO_DEGREE 1
 #endif
 #include <QGeoCoordinate>
@@ -25,6 +33,7 @@ struct ImuData
     RTVector3 compas;
     RTVector3 fusionPose;
     RTFLOAT temperature;
+    RTFLOAT heading;
     MOTION_DATA motionData;
     static RTFLOAT toDegrees(RTFLOAT val)
     {
@@ -38,6 +47,7 @@ struct RoverData
     double yaw;
     //enum {};
     int manip;
+    double travel;
 };
 
 class TeleData

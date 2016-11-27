@@ -111,6 +111,8 @@ void RestComm::handleResponse(const QJsonObject &response)
     bool speedUpdated=false;
     double yaw =0.0;
     bool yawUpdated=false;
+    double travel =0.0;
+    bool travelUpdated=false;
     if(response.contains("speed"))
     {
         speed = response["speed"].toVariant().toDouble(&ok);
@@ -129,11 +131,22 @@ void RestComm::handleResponse(const QJsonObject &response)
             yawUpdated=true;
         }
     }
+    if(response.contains("travel"))
+    {
+        travel = response["travel"].toVariant().toDouble(&ok);
+        if(ok)
+        {
+            qDebug()<<"RestComm: Travel received:"<<travel;
+            travelUpdated=true;
+        }
+    }
     if(speedUpdated)
         _teleData->roverData.speed=speed;
     if(yawUpdated)
         _teleData->roverData.yaw=yaw;
-    _teleData->roverDataValid = yawUpdated || speedUpdated;
+    if(travelUpdated)
+        _teleData->roverData.travel=travel;
+    _teleData->roverDataValid = yawUpdated || speedUpdated || travelUpdated;
 }
 
 void RestComm::stripHeader(QByteArray &data)
