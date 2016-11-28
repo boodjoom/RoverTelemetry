@@ -25,7 +25,7 @@ QByteArray DatagramBuilder::fromTeleData(TeleData *teleData)
         telemetry["temp"]=QString::number(teleData->imuData.temperature);
         telemetry["mag"]=toAngleObject(teleData->imuData.compas);
         telemetry["pos"]=toAngleObject(teleData->imuData.fusionPose);
-        telemetry["heading"]=QString::number(teleData->imuData.heading);
+        telemetry["heading"]=QString::number(ImuData::toDegrees(teleData->imuData.heading));
         telemetry["velocity"]=toRawObject(teleData->imuData.motionData.worldVelocity);
         telemetry["is_moving"]=teleData->imuData.motionData.motion;
     }
