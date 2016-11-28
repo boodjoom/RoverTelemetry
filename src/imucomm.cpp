@@ -84,8 +84,8 @@ void ImuComm::run()
 
             now = RTMath::currentUSecsSinceEpoch();
 
-            //  display 10 times per second
-            if ((now - displayTimer) > 100000)
+            //  display 50 times per second
+            if ((now - displayTimer) > 20000)
             {
                 //Publish data
                 _teleData->imuData.accel    =   imuData.accel;
