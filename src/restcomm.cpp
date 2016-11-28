@@ -91,7 +91,7 @@ void RestComm::request()
         QByteArray buffer;
         buffer.append(request);
         _socket.write(buffer);
-        QTimer::singleShot(500,this,SLOT(request()));
+        QTimer::singleShot(200,this,SLOT(request()));
     }
     else
         qDebug()<<"RestComm: requet on not connected state";
