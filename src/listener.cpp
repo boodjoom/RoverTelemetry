@@ -84,6 +84,11 @@ void Listener::handleRequest(const QJsonObject &request, const QHostAddress &sen
 {
     quint16 reqPort = senderPort;
     bool ok;
+    QHostAddress reqHost = sender;
+    if(request.contains("host"))
+    {
+        reqHost = request["host"].toString();
+    }
     if(request.contains("port"))
     {
         reqPort = request["port"].toVariant().toUInt(&ok);
@@ -97,12 +102,12 @@ void Listener::handleRequest(const QJsonObject &request, const QHostAddress &sen
         const QString action = request["action"].toString();
         if(subscribe.compare(action,Qt::CaseInsensitive) == 0)
         {
-            _registry->subscribe(sender,reqPort);
+            _registry->subscribe(reqHost ,reqPort);
         }
         else
         if(unsubscribe.compare(action,Qt::CaseInsensitive) == 0)
         {
-            _registry->unsubscribe(sender,reqPort);
+            _registry->unsubscribe(reqHost ,reqPort);
         }
         else
            qCritical()<<"Request contains unknown action: "<<action;
