@@ -1,10 +1,7 @@
 #!/bin/sh
-cd 3rdparty/qtposition_gpsd
-qmake qtposition_gpsd.pro
-make
-sudo make install
-cd ../RTIMULib/RTIMULib
-qmake RTIMULib.pro
+mkdir 3rdparty/build
+cd 3rdparty/build
+cmake ../RTIMULib/RTIMULib
 make
 sudo make install
 cd ../..
