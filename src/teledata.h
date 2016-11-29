@@ -49,6 +49,7 @@ struct RoverData
     int manipStateId;
     QString manipState;
     double travel;
+    double battary;
 };
 
 class TeleData

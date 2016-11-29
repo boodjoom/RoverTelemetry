@@ -26,6 +26,7 @@ private slots:
     void disconnected();
     void onReadyRead();
     void request();
+    void requestState();
     void requestVehicle();
     void requestManip();
     void onError(QAbstractSocket::SocketError e);
