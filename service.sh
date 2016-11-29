@@ -8,7 +8,7 @@
 # Description:       Rover Telemetry
 ### END INIT INFO
 
-SCRIPT=/usr/loca/bin/RoverTelemetry
+SCRIPT=/usr/local/bin/RoverTelemetry
 RUNAS=root
 
 PIDFILE=/var/run/RoverTelemetry.pid

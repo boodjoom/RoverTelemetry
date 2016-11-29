@@ -31,7 +31,7 @@ HEADERS += \
     gpscomm.h \
     restcomm.h
 
-OTHER_FILES += ../etc/*  ../logs/* ../etc/docroot/*
+OTHER_FILES += ../etc/*  ../logs/* ../etc/docroot/* ../install.sh ../build.sh ../service.sh
 
 win32: {
    DEFINES += QTWEBAPPLIB_IMPORT
