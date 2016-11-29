@@ -37,6 +37,7 @@ QByteArray DatagramBuilder::fromTeleData(TeleData *teleData)
         vehicle["yaw"]=QString::number(teleData->roverData.yaw);
         vehicle["travel"]=QString::number(teleData->roverData.travel);
         telemetry["vehicle"]=vehicle;
+        telemetry["manip"]=(QJsonObject()["state"]=teleData->roverData.manipState);
     }
 
     if(teleData->geoDataValid)

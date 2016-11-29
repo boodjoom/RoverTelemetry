@@ -8,6 +8,7 @@ RestComm::RestComm(QSettings &settings, TeleData *teleData, QObject *parent)
     : QObject(parent)
   , _teleData(teleData)
   , _started(false)
+    , _reqVehicle(true)
 {
     _roverHost = settings.value("RoverHost","127.0.0.1").toString();
     bool ok;
@@ -86,15 +87,35 @@ void RestComm::request()
 {
     if(_socket.state() == QAbstractSocket::ConnectedState)
     {
+        if(_reqVehicle)
+            requestVehicle();
+        else
+            requestManip();
+        QTimer::singleShot(200,this,SLOT(request()));
+    }
+    else
+    {
+        qDebug()<<"RestComm: requet on not connected state";
+    }
+}
+
+void RestComm::requestVehicle()
+{
+
         QString request = "GET /vehicle HTTP/1.1\r\nhost: "+
                 _roverHost.toString()+"\r\n\r\n";
         QByteArray buffer;
         buffer.append(request);
         _socket.write(buffer);
-        QTimer::singleShot(200,this,SLOT(request()));
-    }
-    else
-        qDebug()<<"RestComm: requet on not connected state";
+}
+
+void RestComm::requestManip()
+{
+        QString request = "GET /manip HTTP/1.1\r\nhost: "+
+                _roverHost.toString()+"\r\n\r\n";
+        QByteArray buffer;
+        buffer.append(request);
+        _socket.write(buffer);
 }
 
 void RestComm::onError(QAbstractSocket::SocketError e)
@@ -113,6 +134,7 @@ void RestComm::handleResponse(const QJsonObject &response)
     bool yawUpdated=false;
     double travel =0.0;
     bool travelUpdated=false;
+    bool fromVehicle=false;
     if(response.contains("speed"))
     {
         speed = response["speed"].toVariant().toDouble(&ok);
@@ -121,6 +143,7 @@ void RestComm::handleResponse(const QJsonObject &response)
             qDebug()<<"RestComm: Speed received:"<<speed;
             speedUpdated=true;
         }
+        fromVehicle=true;
     }
     if(response.contains("yaw"))
     {
@@ -130,6 +153,7 @@ void RestComm::handleResponse(const QJsonObject &response)
             qDebug()<<"RestComm: Yaw received:"<<yaw;
             yawUpdated=true;
         }
+        fromVehicle=true;
     }
     if(response.contains("travel"))
     {
@@ -139,6 +163,7 @@ void RestComm::handleResponse(const QJsonObject &response)
             qDebug()<<"RestComm: Travel received:"<<travel;
             travelUpdated=true;
         }
+        fromVehicle=true;
     }
     if(speedUpdated)
         _teleData->roverData.speed=speed;
@@ -146,7 +171,19 @@ void RestComm::handleResponse(const QJsonObject &response)
         _teleData->roverData.yaw=yaw;
     if(travelUpdated)
         _teleData->roverData.travel=travel;
-    _teleData->roverDataValid = yawUpdated || speedUpdated || travelUpdated;
+    if(fromVehicle)
+    {
+        _teleData->roverDataValid = yawUpdated || speedUpdated || travelUpdated;
+        return;
+    }
+    if(response.contains("state"))
+    {
+        _teleData->roverData.manipState=response["state"].toString();
+        _teleData->roverDataValid = true;
+    }
+    else
+        _teleData->roverDataValid = false;
+
 }
 
 void RestComm::stripHeader(QByteArray &data)

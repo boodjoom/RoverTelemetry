@@ -26,6 +26,8 @@ private slots:
     void disconnected();
     void onReadyRead();
     void request();
+    void requestVehicle();
+    void requestManip();
     void onError(QAbstractSocket::SocketError e);
 private:
     TeleData* _teleData;
@@ -37,6 +39,7 @@ private:
     QByteArray _rxBuffer;
     void handleResponse(const QJsonObject& response);
     void stripHeader(QByteArray& data);
+    bool _reqVehicle;
 };
 
 #endif // RESTCOMM_H

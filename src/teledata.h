@@ -46,7 +46,8 @@ struct RoverData
     double speed;
     double yaw;
     //enum {};
-    int manip;
+    int manipStateId;
+    QString manipState;
     double travel;
 };
 
