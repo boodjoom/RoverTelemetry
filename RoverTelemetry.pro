@@ -9,3 +9,5 @@ win32: {
 }
 
 CONFIG   += ordered
+
+CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
