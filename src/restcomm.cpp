@@ -146,7 +146,8 @@ void RestComm::handleResponse(const QJsonObject &response)
     bool travelUpdated=false;
     QString manipState = "unknown";
     bool manipStateUpdated = false;
-    double battery =0.0;
+    double battery_body =0.0;
+    double battery_brain =0.0;
     bool batteryUpdated = false;
     if(response.contains("speed"))
     {
@@ -183,10 +184,23 @@ void RestComm::handleResponse(const QJsonObject &response)
     }
     if(response.contains("battery"))
     {
-        battery = response["battery"].toVariant().toDouble(&ok);
-        if(ok)
+        if(!response["battery"].isObject())
         {
-            qDebug()<<"RestComm: Battery received:"<<battery;
+            qCritical()<<"Unsuported battery format, need update?";
+        }
+        else
+        {
+            QJsonObject battery = response["battery"].toObject();
+            battery_body = battery["body"].toVariant().toDouble(&ok);
+            if(ok)
+            {
+                qDebug()<<"RestComm: Body battery received:"<<battery_body;
+            }
+            battery_brain = battery["brain"].toVariant().toDouble(&ok);
+            if(ok)
+            {
+                qDebug()<<"RestComm: Brain battery received:"<<battery_brain;
+            }
             batteryUpdated=true;
         }
     }
@@ -199,7 +213,10 @@ void RestComm::handleResponse(const QJsonObject &response)
     if(manipStateUpdated)
         _teleData->roverData.manipState = manipState;
     if(batteryUpdated)
-        _teleData->roverData.battary = battery;
+    {
+        _teleData->roverData.battery_body = battery_body;
+        _teleData->roverData.battery_brain = battery_brain;
+    }
     _teleData->roverDataValid = batteryUpdated || manipStateUpdated ||yawUpdated || speedUpdated || travelUpdated;
 }
 
