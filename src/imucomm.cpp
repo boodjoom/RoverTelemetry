@@ -85,8 +85,8 @@ void ImuComm::run()
             now = RTMath::currentUSecsSinceEpoch();
 
             //  display 50 times per second
-            if ((now - displayTimer) > 20000)
-            {
+//            if ((now - displayTimer) > 20000)
+//            {
                 //Publish data
                 _teleData->imuData.accel    =   imuData.accel;
                 _teleData->imuData.gyro     =   imuData.gyro;
@@ -97,9 +97,9 @@ void ImuComm::run()
                 _teleData->imuData.motionData.motion = ismoving;
                 _teleData->imuData.heading = heading_avg;
                 _teleData->imuDataValid = true;
-                emit publish();
-                displayTimer = now;
-            }
+//                emit publish();
+//                displayTimer = now;
+//            }
 
             //  update rate every second
 
